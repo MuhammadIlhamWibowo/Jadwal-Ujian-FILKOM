@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 import poros.filkom.ub.jadwalujianfilkom.R;
@@ -64,7 +66,16 @@ public class JadwalFragment extends Fragment {
         super.onCreate(savedInstanceState);
         initBundle();
         jadwalAdapter = new JadwalAdapter(getContext());
-        getJadwal();
+
+        sharedPreferences = getContext().getSharedPreferences("jadwal", MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("offline", false)) {
+            Toast.makeText(getContext(), "off", Toast.LENGTH_SHORT).show();
+            getJadwalOff();
+            //getJadwal();
+        } else {
+            Toast.makeText(getContext(), "on", Toast.LENGTH_SHORT).show();
+            getJadwal();
+        }
     }
 
     @Override
@@ -96,24 +107,16 @@ public class JadwalFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        sharedPreferences = getContext().getSharedPreferences("account", MODE_PRIVATE);
+        sharedPreferences = getContext().getSharedPreferences("jadwal", MODE_PRIVATE);
         prodi = sharedPreferences.getString("prodi", "");
     }
 
-    private void getJadwal() {
-        Service service = ApiGenerator.createService(Service.class);
-
-        Call<JadwalResponse> call = service.getJadwalUAS();
-        jadwalKu.clear();
-
-        call.enqueue(new Callback<JadwalResponse>() {
-            @Override
-            public void onResponse(Call<JadwalResponse> call, Response<JadwalResponse> response) {
-                JadwalResponse jadwalResponse = response.body();
+    private void loadJadwal(JadwalResponse jadwalResponse) {
+        //JadwalResponse jadwalResponse = response.body();
                 int ke = 0;
                 for (int h = 0; h < jadwalResponse.getPages().size(); h++) {
                     for (int i = 1; i < jadwalResponse.getPages().get(h).getTables().get(0).getCells().size(); i++) {
-                        ArrayList<Cell> cell = (ArrayList<Cell>) response.body().getPages().get(h).getTables().get(0).getCells();
+                        ArrayList<Cell> cell = (ArrayList<Cell>) jadwalResponse.getPages().get(h).getTables().get(0).getCells();
                         if (cell.get(i).getI() <= 2) {
 
                         } else {
@@ -236,7 +239,47 @@ public class JadwalFragment extends Fragment {
 
                 }
                 jadwalAdapter.notifyDataSetChanged();
+    }
 
+    private void getJadwalOff() {
+        jadwalKu.clear();
+        sharedPreferences = getContext().getSharedPreferences("jadwal", MODE_PRIVATE);
+        String jadwalUas = sharedPreferences.getString("jadwalUas", "");
+
+        Gson gson = new Gson();
+        //jadwalUas = gson.toJson(jadwalUas);
+        //jadwalUas = jadwalUas.substring(1, jadwalUas.length()-1);
+        Log.d(TAG, "getJadwalOff: "+jadwalUas);
+        Log.d(TAG, "getJadwalOff: "+jadwalUas);
+        JadwalResponse jadwalResponse = gson.fromJson(jadwalUas, JadwalResponse.class);
+        Log.d(TAG, "gaaetJadwalOff: aa"+jadwalResponse.getPages().get(0).getTables().get(0).getCells().get(0).getI());
+        loadJadwal(jadwalResponse);
+
+    }
+
+    private void getJadwal() {
+        Service service = ApiGenerator.createService(Service.class);
+
+        Call<JadwalResponse> call = service.getJadwalUAS();
+        jadwalKu.clear();
+
+        call.enqueue(new Callback<JadwalResponse>() {
+            @Override
+            public void onResponse(Call<JadwalResponse> call, Response<JadwalResponse> response) {
+
+                Gson gson = new Gson();
+                String jsonString = gson.toJson(response.body());
+
+                sharedPreferences = getContext().getSharedPreferences("jadwal", MODE_PRIVATE);
+                editor = sharedPreferences.edit();
+                editor.putString("jadwalUas", jsonString);
+                editor.apply();
+
+                JadwalResponse jadwalResponse = gson.fromJson(jsonString , JadwalResponse.class);
+                Log.d(TAG, "onResponse: jadwal2"+jadwalResponse.getPages().get(0).getNumber().toString());
+
+                //JadwalResponse jadwalResponse = response.body();
+                loadJadwal(jadwalResponse);
             }
 
             @Override

@@ -46,8 +46,8 @@ public class LoginActivity extends AppCompatActivity {
     private String html;
     static private String cookie;
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    SharedPreferences sharedPreferencesJadwal;
+    SharedPreferences.Editor editorJadwal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +56,15 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        sharedPreferences = getSharedPreferences("account", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        sharedPreferencesJadwal = getSharedPreferences("jadwal", MODE_PRIVATE);
+        editorJadwal = sharedPreferencesJadwal.edit();
 
-        if (!sharedPreferences.getString("username", "").equals("")) {
-            etUsername.setText(sharedPreferences.getString("username", ""));
+        if (!sharedPreferencesJadwal.getString("username", "").equals("")) {
+            etUsername.setText(sharedPreferencesJadwal.getString("username", ""));
         }
 
-        if (!sharedPreferences.getString("password", "").equals("")) {
-            etPassword.setText(sharedPreferences.getString("password", ""));
+        if (!sharedPreferencesJadwal.getString("password", "").equals("")) {
+            etPassword.setText(sharedPreferencesJadwal.getString("password", ""));
         }
 
         //get unAuthenticated token
@@ -74,7 +74,17 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.btn_login)
     public void submit() {
         //authenticated token
+        editorJadwal.putBoolean("offline", false);
+        editorJadwal.commit();
         login();
+    }
+
+    @OnClick(R.id.btn_offline)
+    public void offline() {
+        String jadwalSiam = sharedPreferencesJadwal.getString("jadwalSiam", "");
+        editorJadwal.putBoolean("offline", true);
+        editorJadwal.commit();
+        getJadwal(jadwalSiam);
     }
 
     private void showProgressBar() {
@@ -112,10 +122,10 @@ public class LoginActivity extends AppCompatActivity {
         showProgressBar();
 
         String username = etUsername.getText().toString();
-        editor.putString("username", username);
+        editorJadwal.putString("username", username);
         String password = etPassword.getText().toString();
-        editor.putString("password", password);
-        editor.apply();
+        editorJadwal.putString("password", password);
+        editorJadwal.apply();
 
         Service service = SiamGenerator.createService(Service.class);
 
@@ -135,8 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     List<String> prodi = Arrays.asList(items.get(1).split("</div>"));
                     Log.d("zxcresp", "onResponse: "+prodi.get(0));
-                    editor.putString("prodi", prodi.get(0));
-                    editor.apply();
+                    editorJadwal.putString("prodi", prodi.get(0));
+                    editorJadwal.apply();
                     jadwal();
                 } catch (Exception e) {
                     disableProgressBar();
@@ -151,18 +161,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void jadwal() {
-
-        Service service = SiamGenerator.createService(Service.class);
-
-        Call<String> call = service.jadwal(cookie);
-
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-
-
-                html = response.body().toString();
+    private void getJadwal(String param) {
+        html = param;
 //                webView.loadDataWithBaseURL("", html, mimeType, encoding, "");
                 List<String> items = Arrays.asList(html.split("<tr class=\"text\" bgcolor=\"#ffffff\" align=\"center\">"));
 //                for (int i = 0; i < items.size(); i++) {
@@ -267,6 +267,24 @@ public class LoginActivity extends AppCompatActivity {
                  * I say this: never gonna give you up, never gonna let you down.
                  */
                 disableProgressBar();
+    }
+
+    private void jadwal() {
+
+        Service service = SiamGenerator.createService(Service.class);
+
+        Call<String> call = service.jadwal(cookie);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                sharedPreferencesJadwal = getSharedPreferences("jadwal", MODE_PRIVATE);
+                editorJadwal = sharedPreferencesJadwal.edit();
+                editorJadwal.putString("jadwalSiam", response.body());
+
+                html = response.body().toString();
+                getJadwal(html);
             }
 
             @Override
