@@ -6,7 +6,7 @@
     <string name="title_profile">Profile</string>
     <string name="button_set_date">Set Date</string>
 
-    <string name="feedback_note">Hei, terimakasih sudah mencoba aplikasi kami..\nKami berharap anda bisa memberi kami beberapa saran agar kami bisa membuat aplikasi ini menjadi lebih baik lagi,\nSedikit masukan dari anda sangatlah berarti bagi kami, tidak perlu sungkan untuk memberi tahu kami pendapat anda.\nKami menunggu setiap masukan dari anda...</string>
+    <string name="feedback_note">Hei, terimakasih sudah mencoba aplikasi kami.\nKami berharap anda bisa memberi kami beberapa saran agar kami bisa membuat aplikasi ini menjadi lebih baik lagi.\nSedikit masukan dari anda sangatlah berarti bagi kami, tidak perlu sungkan untuk memberi tahu kami pendapat anda.\nKami menunggu setiap masukan dari anda.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

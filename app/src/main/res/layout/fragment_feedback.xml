@@ -1,73 +1,90 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="poros.filkom.ub.jadwalujianfilkom.fragment.FeedbackFragment">
+    tools:context="poros.filkom.ub.jadwalujianfilkom.fragment.FeedbackFragment"
+    android:padding="20dp">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:hint="nama"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="50dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="30dp"
-            android:maxLines="1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <EditText
-            android:id="@+id/et_description"
-            android:hint="feedback"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.EditText"
-            android:layout_marginRight="50dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="10dp"
-            android:maxLines="3"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_name"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F"
+                android:textSize="30sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="eedback"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:text="@string/feedback_note"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_description"
-            app:layout_constraintBottom_toTopOf="@+id/btn_submit"/>
+            android:text="@string/feedback_note" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Nama"
+            android:textSize="18sp"/>
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Feedback"
+            android:textSize="18sp"/>
+
+        <EditText
+            android:id="@+id/et_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.EditText"
+            android:maxLines="3"/>
 
         <Button
-            android:id="@id/btn_submit"
+            android:id="@+id/btn_submit"
             android:text="submit"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_button_feedback"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_margin="10dp"/>
+            android:layout_height="wrap_content"/>
 
-        <ProgressBar
-            android:id="@+id/pb_feedback"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
-</FrameLayout>
+    <ProgressBar
+        android:id="@+id/pb_feedback"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</RelativeLayout>
